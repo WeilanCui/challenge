@@ -19,12 +19,13 @@ import L, {
 
 const LAYER_KEY = 'map-layer';
 
+
+
+
 export default class ReactMap extends Component {
   static getDerivedStateFromProps(props, state) {
     const bounds = latLngBounds([]);
     const devices = get(props, ['devices']) || [];
-    console.log('props', props)
-
     devices.forEach(function (device) {
       const lat = get(device, ['positionsByDeviceId', 'nodes', 0, 'latitude']);
       const lng = get(device, ['positionsByDeviceId', 'nodes', 0, 'longitude']);
@@ -49,15 +50,19 @@ export default class ReactMap extends Component {
     "Show current location": !(localStorage.getItem("Show current location") === 'false'),
     bounds: null,
     selectedDate: moment('06/21/2020').startOf("D"),
+    //added
+    nodes:null
   };
-
-  renderDevice = (device) => {
+   
+  // forEach(()=>renderDevice(device, ))
+  renderDevice = (device, nodeIndex=0) => {
     const { selectedDate } = this.state;
     const { id, name, batteryPercentage } = device;
-    const lat = get(device, ['positionsByDeviceId', 'nodes', 0, 'latitude']);
-    const lng = get(device, ['positionsByDeviceId', 'nodes', 0, 'longitude']);
-    const address = get(device, ['positionsByDeviceId', 'nodes', 0, 'address']);
-    const positionAt = get(device, ['positionsByDeviceId', 'nodes', 0, 'positionAt']);
+    const lat = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'latitude']);
+    const lng = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'longitude']);
+    const address = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'address']);
+    const positionAt = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'positionAt']);
+
 
     const start = moment(selectedDate).startOf("D");
     const end = moment(selectedDate).endOf("D");
@@ -79,7 +84,7 @@ export default class ReactMap extends Component {
               closeOnClick={false}
               interactive={true}>
               <div>
-                <div><b>{name || 'Unknown device'}</b> {`(${Math.round(batteryPercentage)}%)`}</div>
+                <div ><b>{name || 'Unknown device'}</b> {`(${Math.round(batteryPercentage)}%)`}</div>
                 {address ? <div className="small"><a href={`https://maps.google.com/maps?q=${lat},${lng}`}>{address}</a></div> : null}
                 {positionAt ? <div className="small">Updated: {moment(positionAt).format('ddd MMM D, h:mma')}</div> : null}
               </div>
