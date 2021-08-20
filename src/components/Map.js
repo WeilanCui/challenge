@@ -16,8 +16,6 @@ import L, { latLng, latLngBounds } from "leaflet";
 
 const LAYER_KEY = "map-layer";
 
-
-
 export default class ReactMap extends Component {
   static getDerivedStateFromProps(props, state) {
     const bounds = latLngBounds([]);
@@ -51,12 +49,9 @@ export default class ReactMap extends Component {
     bounds: null,
     selectedDate: moment("06/21/2020").startOf("D"),
     //added
-    nodes: null,
   };
 
-
-  renderDevice = (device,node, nodeIndex = 0) => {
-   
+  renderDevice = (device, node, nodeIndex = 0) => {
     const { selectedDate } = this.state;
     const { id, name, batteryPercentage } = device;
     const lat = get(node, [
@@ -83,26 +78,17 @@ export default class ReactMap extends Component {
       // nodeIndex,
       "positionAt",
     ]);
-
-    console.log(device,nodeIndex,address, "sjflsjdlfkjsldkfjskdflskdjflsld")
-    // console.log(this.state, "stttttatttte");
-    //added
-
-  
-    // setState({...this.state, nodes:nodess})
-    //  this.setState({nodes: nodess})
-    // get(this.props.devices[0],['positionsByDeviceId', 'nodes'])
-    //  console.log(state, "state initiated with nodesarray")
-
-    // console.log(state, "state initiated with nodesarray")
-
     const start = moment(selectedDate).startOf("D");
     const end = moment(selectedDate).endOf("D");
     if (lat || lng) {
       return (
         <>
           {/* Insert Device Track */}
-          <Marker key={`${id}${nodeIndex}`} iconSize={100} position={latLng({ lat, lng })}>
+          <Marker
+            key={`${id}${nodeIndex}`}
+            iconSize={100}
+            position={latLng({ lat, lng })}
+          >
             <Tooltip
               permanent={true}
               direction='top'
@@ -139,17 +125,10 @@ export default class ReactMap extends Component {
       return null;
     }
   };
-  renderNodes=(device)=>{
-    const nodess = get(device, ["positionsByDeviceId", "nodes"]);
-    // for (let i=0; i<nodess.length; i++){
-    //      renderDevice(device,i)
-    // }
-
-    const nodes= nodess.map((node,i)=>this.renderDevice(device,node,i))
-    console.log(nodes, "yooohooo")
-    return nodes
-  //   renderDevice(device,)
-  }
+  renderNodes = (device) => {
+    const nodes = get(device, ["positionsByDeviceId", "nodes"]);
+    return nodes.map((node, i) => this.renderDevice(device, node, i));
+  };
   render() {
     const { devices } = this.props;
     const { bounds } = this.state;
