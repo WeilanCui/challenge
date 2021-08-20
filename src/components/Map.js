@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import get from 'lodash.get';
-import moment from 'moment';
+import React, { Component } from "react";
+import get from "lodash.get";
+import moment from "moment";
 import {
   Map as LeafletMap,
   TileLayer,
@@ -11,24 +11,20 @@ import {
   ScaleControl,
   Polyline,
   ZoomControl,
-} from 'react-leaflet';
-import L, {
-  latLng,
-  latLngBounds,
-} from 'leaflet';
+} from "react-leaflet";
+import L, { latLng, latLngBounds } from "leaflet";
 
-const LAYER_KEY = 'map-layer';
-
+const LAYER_KEY = "map-layer";
 
 
 
 export default class ReactMap extends Component {
   static getDerivedStateFromProps(props, state) {
     const bounds = latLngBounds([]);
-    const devices = get(props, ['devices']) || [];
+    const devices = get(props, ["devices"]) || [];
     devices.forEach(function (device) {
-      const lat = get(device, ['positionsByDeviceId', 'nodes', 0, 'latitude']);
-      const lng = get(device, ['positionsByDeviceId', 'nodes', 0, 'longitude']);
+      const lat = get(device, ["positionsByDeviceId", "nodes", 0, "latitude"]);
+      const lng = get(device, ["positionsByDeviceId", "nodes", 0, "longitude"]);
 
       if (lat || lng) {
         bounds.extend({ lat, lng });
@@ -39,30 +35,66 @@ export default class ReactMap extends Component {
 
     if (!bounds.isValid()) {
       // continental us
-      bounds.extend(L.latLngBounds({ lat: 50, lng: -130 }, { lat: 20, lng: -60 }));
+      bounds.extend(
+        L.latLngBounds({ lat: 50, lng: -130 }, { lat: 20, lng: -60 })
+      );
     }
 
     return Object.assign({}, state, bounds.isValid() ? { bounds } : {});
   }
 
   state = {
-    satellite: (localStorage.getItem(LAYER_KEY) === 'Satellite'),
-    "Show current location": !(localStorage.getItem("Show current location") === 'false'),
+    satellite: localStorage.getItem(LAYER_KEY) === "Satellite",
+    "Show current location": !(
+      localStorage.getItem("Show current location") === "false"
+    ),
     bounds: null,
-    selectedDate: moment('06/21/2020').startOf("D"),
+    selectedDate: moment("06/21/2020").startOf("D"),
     //added
-    nodes:null
+    nodes: null,
   };
+
+
+  renderDevice = (device,node, nodeIndex = 0) => {
    
-  // forEach(()=>renderDevice(device, ))
-  renderDevice = (device, nodeIndex=0) => {
     const { selectedDate } = this.state;
     const { id, name, batteryPercentage } = device;
-    const lat = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'latitude']);
-    const lng = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'longitude']);
-    const address = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'address']);
-    const positionAt = get(device, ['positionsByDeviceId', 'nodes', nodeIndex, 'positionAt']);
+    const lat = get(node, [
+      // "positionsByDeviceId",
+      // "nodes",
+      // nodeIndex,
+      "latitude",
+    ]);
+    const lng = get(node, [
+      // "positionsByDeviceId",
+      // "nodes",
+      // nodeIndex,
+      "longitude",
+    ]);
+    const address = get(node, [
+      // "positionsByDeviceId",
+      // "nodes",
+      // nodeIndex,
+      "address",
+    ]);
+    const positionAt = get(node, [
+      // "positionsByDeviceId",
+      // "nodes",
+      // nodeIndex,
+      "positionAt",
+    ]);
 
+    console.log(device,nodeIndex,address, "sjflsjdlfkjsldkfjskdflskdjflsld")
+    // console.log(this.state, "stttttatttte");
+    //added
+
+  
+    // setState({...this.state, nodes:nodess})
+    //  this.setState({nodes: nodess})
+    // get(this.props.devices[0],['positionsByDeviceId', 'nodes'])
+    //  console.log(state, "state initiated with nodesarray")
+
+    // console.log(state, "state initiated with nodesarray")
 
     const start = moment(selectedDate).startOf("D");
     const end = moment(selectedDate).endOf("D");
@@ -70,23 +102,34 @@ export default class ReactMap extends Component {
       return (
         <>
           {/* Insert Device Track */}
-          <Marker
-            key={`${id}`}
-            iconSize={100}
-            position={latLng({ lat, lng })}>
+          <Marker key={`${id}${nodeIndex}`} iconSize={100} position={latLng({ lat, lng })}>
             <Tooltip
               permanent={true}
-              direction="top"
+              direction='top'
               maxWidth={240}
               autoPan={false}
               closeButton={false}
               autoClose={false}
               closeOnClick={false}
-              interactive={true}>
+              interactive={true}
+            >
               <div>
-                <div ><b>{name || 'Unknown device'}</b> {`(${Math.round(batteryPercentage)}%)`}</div>
-                {address ? <div className="small"><a href={`https://maps.google.com/maps?q=${lat},${lng}`}>{address}</a></div> : null}
-                {positionAt ? <div className="small">Updated: {moment(positionAt).format('ddd MMM D, h:mma')}</div> : null}
+                <div>
+                  <b>{name || "Unknown device"}</b>{" "}
+                  {`(${Math.round(batteryPercentage)}%)`}
+                </div>
+                {address ? (
+                  <div className='small'>
+                    <a href={`https://maps.google.com/maps?q=${lat},${lng}`}>
+                      {address}
+                    </a>
+                  </div>
+                ) : null}
+                {positionAt ? (
+                  <div className='small'>
+                    Updated: {moment(positionAt).format("ddd MMM D, h:mma")}
+                  </div>
+                ) : null}
               </div>
             </Tooltip>
           </Marker>
@@ -96,60 +139,84 @@ export default class ReactMap extends Component {
       return null;
     }
   };
+  renderNodes=(device)=>{
+    const nodess = get(device, ["positionsByDeviceId", "nodes"]);
+    // for (let i=0; i<nodess.length; i++){
+    //      renderDevice(device,i)
+    // }
 
+    const nodes= nodess.map((node,i)=>this.renderDevice(device,node,i))
+    console.log(nodes, "yooohooo")
+    return nodes
+  //   renderDevice(device,)
+  }
   render() {
     const { devices } = this.props;
     const { bounds } = this.state;
 
+    console.log(devices, "hiiii");
+
     return (
       <LeafletMap
-        ref={(map) => this._map = map}
+        ref={(map) => (this._map = map)}
         bounds={bounds}
         onBaselayerchange={(e) => {
-          this.setState({ satellite: (e.name === 'Satellite') });
+          this.setState({ satellite: e.name === "Satellite" });
           localStorage.setItem(LAYER_KEY, e.name);
         }}
         onOverlayadd={(e) => {
           this.setState({ [e.name]: true });
-          localStorage.setItem(e.name, 'true');
+          localStorage.setItem(e.name, "true");
         }}
         onOverlayremove={(e) => {
           this.setState({ [e.name]: false });
-          localStorage.setItem(e.name, 'false');
+          localStorage.setItem(e.name, "false");
         }}
         maxZoom={16}
         zoomControl={false}
-        style={{ minHeight: 800, width: '100%' }}>
-        <ScaleControl position="bottomleft" />
-        <ZoomControl position="topright" />
-        <LayersControl position="topleft" sortLayers={true} sortFunction={function (layerA, layerB, nameA, nameB) {
-          const order = ["Map", "Satellite", "Show current location"];
-          const idxA = order.indexOf(nameA), idxB = order.indexOf(nameB);
+        style={{ minHeight: 800, width: "100%" }}
+      >
+        <ScaleControl position='bottomleft' />
+        <ZoomControl position='topright' />
+        <LayersControl
+          position='topleft'
+          sortLayers={true}
+          sortFunction={function (layerA, layerB, nameA, nameB) {
+            const order = ["Map", "Satellite", "Show current location"];
+            const idxA = order.indexOf(nameA),
+              idxB = order.indexOf(nameB);
 
-          return (idxA > idxB ? +1 : (idxA < idxB ? -1 : 0));
-        }}>
-          <LayersControl.BaseLayer name="Map" checked={!this.state.satellite}>
+            return idxA > idxB ? +1 : idxA < idxB ? -1 : 0;
+          }}
+        >
+          <LayersControl.BaseLayer name='Map' checked={!this.state.satellite}>
             <TileLayer
               crossOrigin
               tileSize={512}
               minZoom={1}
               maxZoom={20}
               zoomOffset={-1}
-              url="https://d1y5pbzf4dj7w6.cloudfront.net/maps/streets/{z}/{x}/{y}@2x.png?key=9itgsP62snlBhRn8G4sH" />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer name="Satellite" checked={this.state.satellite}>
-            <TileLayer
-              url="https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
-              maxZoom={20}
-              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+              url='https://d1y5pbzf4dj7w6.cloudfront.net/maps/streets/{z}/{x}/{y}@2x.png?key=9itgsP62snlBhRn8G4sH'
             />
           </LayersControl.BaseLayer>
-          {(devices || []).length > 0 ?
-            <LayersControl.Overlay name="Show current location" checked={this.state["Show current location"]}>
-              <LayerGroup>
-                {(devices || []).map(this.renderDevice)}
-              </LayerGroup>
-            </LayersControl.Overlay> : null}
+          <LayersControl.BaseLayer
+            name='Satellite'
+            checked={this.state.satellite}
+          >
+            <TileLayer
+              url='https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
+              maxZoom={20}
+              subdomains={["mt0", "mt1", "mt2", "mt3"]}
+            />
+          </LayersControl.BaseLayer>
+          {(devices || []).length > 0 ? (
+            <LayersControl.Overlay
+              name='Show current location'
+              checked={this.state["Show current location"]}
+            >
+              <LayerGroup>{(devices || []).map(this.renderNodes)}</LayerGroup>
+            </LayersControl.Overlay>
+          ) : null}
         </LayersControl>
       </LeafletMap>
     );
