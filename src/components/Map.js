@@ -50,7 +50,7 @@ export default class ReactMap extends Component {
     //added
   };
 
-  renderDevice = (device, node, nodeIndex = 0) => {
+  renderDevice = (device, node, nodeIndex) => {
     const { selectedDate } = this.state;
     const { id, name, batteryPercentage } = device;
     const lat = get(node, [
