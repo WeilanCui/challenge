@@ -37,7 +37,6 @@ export default class ReactMap extends Component {
         L.latLngBounds({ lat: 50, lng: -130 }, { lat: 20, lng: -60 })
       );
     }
-
     return Object.assign({}, state, bounds.isValid() ? { bounds } : {});
   }
 
@@ -132,9 +131,6 @@ export default class ReactMap extends Component {
   render() {
     const { devices } = this.props;
     const { bounds } = this.state;
-
-    console.log(devices, "hiiii");
-
     return (
       <LeafletMap
         ref={(map) => (this._map = map)}
