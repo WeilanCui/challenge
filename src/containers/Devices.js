@@ -20,7 +20,6 @@ const SuperDevice = (props) => (
 );
 
 const Devices = (props) => {
-  console.log(props, "meeeh")
   const [selectedDate, setSelectedDate] = useState(null);
   return (
     <div className="container">

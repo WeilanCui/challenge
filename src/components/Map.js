@@ -47,7 +47,6 @@ export default class ReactMap extends Component {
     ),
     bounds: null,
     selectedDate: moment("06/21/2020").startOf("D"),
-    //added
   };
 
   renderDevice = (device, node, nodeIndex) => {
@@ -124,13 +123,25 @@ export default class ReactMap extends Component {
       return null;
     }
   };
+
+  renderPolyline = (device) => {
+    const nodes = get(device, ["positionsByDeviceId", "nodes"]);
+    return nodes.map((node) => {
+      let lat = get(node, ["latitude"]);
+      let lng = get(node, ["longitude"]);
+      return [lat, lng];
+    });
+  };
   renderNodes = (device) => {
     const nodes = get(device, ["positionsByDeviceId", "nodes"]);
-    return nodes.map((node, i) => this.renderDevice(device, node, i));
+    return nodes.map((node, i) => {
+      return this.renderDevice(device, node, i);
+    });
   };
   render() {
     const { devices } = this.props;
     const { bounds } = this.state;
+
     return (
       <LeafletMap
         ref={(map) => (this._map = map)}
@@ -189,10 +200,17 @@ export default class ReactMap extends Component {
               name='Show current location'
               checked={this.state["Show current location"]}
             >
-              <LayerGroup>{(devices || []).map(this.renderNodes)}</LayerGroup>
+              <LayerGroup>
+                {(devices || []).map(this.renderNodes)}
+                {console.log("line 213")}
+              </LayerGroup>
             </LayersControl.Overlay>
           ) : null}
         </LayersControl>
+        <Polyline
+          pathOptions={{ color: "red" }}
+          positions={(devices || []).map(this.renderPolyline)}
+        />
       </LeafletMap>
     );
   }
