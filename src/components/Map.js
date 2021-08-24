@@ -125,32 +125,36 @@ export default class ReactMap extends Component {
   };
 
   renderPolyline = (device) => {
-    //  let {selectedDate} = this.props.selectedDate||true
-    //  console.log(selectedDate, "hiosjoijfosjoj")
-    const nodes = get(device, ["positionsByDeviceId", "nodes"]);
+    const nodes = this.filterNode(device);
     return nodes.map((node) => {
       let lat = get(node, ["latitude"]);
       let lng = get(node, ["longitude"]);
       return [lat, lng];
     });
   };
-  renderNodes = (device) => {
-    console.log(device);
-    console.log(this.props.selectedDate);
+
+  filterNode = (device) => {
+    const filtered = [];
     let date = new Date(this.props.selectedDate).toISOString();
     date = date.slice(0, 10);
-    console.log(date, "selected date");
-
 
     const nodes = get(device, ["positionsByDeviceId", "nodes"]);
-    const filtered= nodes.map((node, i) => {
-      console.log(node.positionAt.slice(0, 10),"nodedate")
+    for (let i = 0; i < nodes.length; i++) {
+      let node = nodes[i];
       if (node.positionAt.slice(0, 10) === date) {
-        return this.renderDevice(device, node, i);
+        filtered.push(node);
       }
+    }
+
+    return filtered;
+  };
+
+  renderNodes = (device) => {
+    const nodes = this.filterNode(device);
+    const renderNode = nodes.map((node, i) => {
+      return this.renderDevice(device, node, i);
     });
-    console.log(filtered)
-    return filtered
+    return renderNode;
   };
   render() {
     const { devices } = this.props;

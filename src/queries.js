@@ -42,7 +42,7 @@ query DeviceLocations {
       userByUserId {
         id
       }
-      positionsByDeviceId (first: 200, orderBy: POSITION_AT_DESC)  {
+      positionsByDeviceId (first: 500, orderBy: POSITION_AT_DESC)  {
         nodes {
           id
           positionAt
