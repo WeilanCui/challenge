@@ -50,6 +50,7 @@ export default class ReactMap extends Component {
   };
 
   renderDevice = (device, node, nodeIndex) => {
+    console.log(device)
     const { selectedDate } = this.state;
     const { id, name, batteryPercentage } = device;
     const lat = get(node, [
@@ -129,6 +130,8 @@ export default class ReactMap extends Component {
     return nodes.map((node) => {
       let lat = get(node, ["latitude"]);
       let lng = get(node, ["longitude"]);
+      let positionAt = get(node, ["positionAt",]);
+      console.log(positionAt)
       return [lat, lng];
     });
   };
@@ -141,6 +144,7 @@ export default class ReactMap extends Component {
   render() {
     const { devices } = this.props;
     const { bounds } = this.state;
+    console.log(this.props.selectedDate,"render")
 
     return (
       <LeafletMap
@@ -208,7 +212,6 @@ export default class ReactMap extends Component {
           ) : null}
         </LayersControl>
         <Polyline
-          pathOptions={{ color: "red" }}
           positions={(devices || []).map(this.renderPolyline)}
         />
       </LeafletMap>

@@ -1,5 +1,5 @@
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+import { graphql } from "react-apollo";
+import gql from "graphql-tag";
 
 export const USER = gql`
   query User {
@@ -14,44 +14,52 @@ export const USER = gql`
 export const withUser = graphql(USER);
 
 // export const DEVICE_LOCATIONS = gql`
-//   query DeviceLocations {
-//     allDevices {
-//       nodes {
-//         id
-//         name
-//         batteryPercentage
-//         positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC) {
-//           nodes {
-//             id
-//             positionAt
-//             address
+// query DeviceLocations {
+//       allDevices {
+//         nodes {
+//           id
+//           name
+//           batteryPercentage
+//           positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC) {
+//             nodes {
+//               id
+//               positionAt
+//               address
+//             }
 //           }
 //         }
 //       }
 //     }
-//   }
 // `;
 
-export const DEVICE_LOCATIONS=gql`
-query DeviceLocations {
-  allDevices {
-    nodes {
-      name
-      id
-      batteryPercentage
-      userByUserId {
+export const DEVICE_LOCATIONS = gql`
+  query DeviceLocations {
+    allDevices {
+      nodes {
+        name
         id
-      }
-      positionsByDeviceId (first: 10, orderBy: POSITION_AT_DESC)  {
-        nodes {
+        batteryPercentage
+        userByUserId {
           id
-          positionAt
-          latitude
-          longitude
-          address
+        }
+        positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC) {
+          nodes {
+            id
+            positionAt
+            latitude
+            longitude
+            address
+          }
         }
       }
     }
   }
-}`
+`;
+
+// function query(){
+// const{data, error, loading, fetchMore }= useQuery(DEVICE_LOCATIONS, { variables:{after:null}})
+
+// }
+
+//creates higher component fxn
 export const withDeviceLocations = graphql(DEVICE_LOCATIONS);
