@@ -33,7 +33,7 @@ export const withUser = graphql(USER);
 // `;
 
 export const DEVICE_LOCATIONS = gql`
-  query DeviceLocations($after: String){
+  query DeviceLocations{
     allDevices {
       nodes {
         name
@@ -42,7 +42,7 @@ export const DEVICE_LOCATIONS = gql`
         userByUserId {
           id
         }
-        positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC, after:$after) {
+        positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC) {
           nodes {
             id
             positionAt
@@ -58,6 +58,34 @@ export const DEVICE_LOCATIONS = gql`
     }
   }
 `;
+
+
+// export const DEVICE_LOCATIONS = gql`
+//   query DeviceLocations($after: String){
+//     allDevices {
+//       nodes {
+//         name
+//         id
+//         batteryPercentage
+//         userByUserId {
+//           id
+//         }
+//         positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC, after:$after) {
+//           nodes {
+//             id
+//             positionAt
+//             latitude
+//             longitude
+//             address
+//           }
+//           pageInfo{
+//             endCursor
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
 
 // function query(){
 // const{data, error, loading, fetchMore }= useQuery(DEVICE_LOCATIONS, { variables:{after:null}})

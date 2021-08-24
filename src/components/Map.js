@@ -14,6 +14,8 @@ import {
 } from "react-leaflet";
 import L, { latLng, latLngBounds } from "leaflet";
 
+import { gql, useQuery } from 'react-apollo'
+import { withDeviceLocations, DEVICE_LOCATIONS } from '../queries';
 const LAYER_KEY = "map-layer";
 
 export default class ReactMap extends Component {
@@ -126,6 +128,23 @@ export default class ReactMap extends Component {
   };
 
   renderPolyline = (device) => {
+    const {endCursor}=device.positionsByDeviceId.pageInfo
+    console.log(endCursor)
+
+  //   const{data, error, loading, fetchMore }= useQuery(DEVICE_LOCATIONS, { variables:{after:null}})
+
+  //   if (loading) return 'Loading...';
+  //   // if (error ||!data) return `Error! ${error.message}`;
+  //  // "WyJwb3NpdGlvbl9hdF9kZXNjIixbIjIwMjAtMDYtMjRUMDc6Mzk6NDItMDQ6MDAiLDIyNzNdXQ=="
+  //   // const  {endCursor}= get(props['data', 'allDevices','pageInfo'],[])
+  //   console.log(endCursor)
+  //   fetchMore({
+  //     variables:{after:endCursor},
+  //     updateQuery:(prevResult,{fetchMoreResult})=>{
+  
+  //     }
+  //   })
+
     const nodes = get(device, ["positionsByDeviceId", "nodes"]);
     return nodes.map((node) => {
       let lat = get(node, ["latitude"]);
