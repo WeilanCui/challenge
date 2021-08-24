@@ -27,7 +27,9 @@ const Devices = (props) => {
         <ReactDatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} />
       </div>
       <div className="col-12">
-        <Map devices={get(props, ['data', 'allDevices', 'nodes'], [])} />
+        <Map devices={get(props, ['data', 'allDevices', 'nodes'], [])} 
+        selectedDate={selectedDate}
+        />
       </div>
     </div>
   );
