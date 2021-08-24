@@ -33,7 +33,7 @@ export const withUser = graphql(USER);
 // `;
 
 export const DEVICE_LOCATIONS = gql`
-  query DeviceLocations {
+  query DeviceLocations($after: String){
     allDevices {
       nodes {
         name
@@ -42,13 +42,16 @@ export const DEVICE_LOCATIONS = gql`
         userByUserId {
           id
         }
-        positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC) {
+        positionsByDeviceId(first: 10, orderBy: POSITION_AT_DESC, after:$after) {
           nodes {
             id
             positionAt
             latitude
             longitude
             address
+          }
+          pageInfo{
+            endCursor
           }
         }
       }
