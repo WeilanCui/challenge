@@ -14,12 +14,13 @@ import {
 } from "react-leaflet";
 import L, { latLng, latLngBounds } from "leaflet";
 
-import { gql, useQuery } from 'react-apollo'
-import { withDeviceLocations, DEVICE_LOCATIONS } from '../queries';
+// import { gql, useQuery } from 'react-apollo'
+// import { withDeviceLocations, DEVICE_LOCATIONS } from '../queries';
 const LAYER_KEY = "map-layer";
 
 export default class ReactMap extends Component {
   static getDerivedStateFromProps(props, state) {
+    console.log(props, "props me")
     const bounds = latLngBounds([]);
     const devices = get(props, ["devices"]) || [];
     devices.forEach(function (device) {

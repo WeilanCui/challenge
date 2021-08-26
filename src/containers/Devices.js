@@ -21,17 +21,25 @@ const SuperDevice = (props) => (
   </div>
 );
 
-const Devices = (props) => {
+const Devices =(props) => {
   const [selectedDate, setSelectedDate] = useState(null);
- 
+  
+  const{loading, error, data, fetchMore }= useQuery(DEVICE_LOCATIONS
+    // , { variables:{after:null}}
+    )
+
+ console.log(data, "hskfjalsjdfakjsf;asjf")
+
+  if (loading) return 'Loading...';
+  if (error ||!data) return `Error! ${error.message}`;
   return (
     <div className="container">
       <div style={{ marginBottom: 300 }}>
         <ReactDatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} />
       </div>
       <div className="col-12">
-        <Map devices={get(props, ['data', 'allDevices', 'nodes'], [])} selectedDate={selectedDate} 
-        endCursor= {get(props['data', 'allDevices', 'positionsByDeviceId','pageInfo'], [])}
+        <Map devices={get(data, ['allDevices', 'nodes'], [])} selectedDate={selectedDate} 
+        endCursor= {get(data['allDevices', 'positionsByDeviceId','pageInfo'], [])}
       
         /> 
       </div> {console.log(props.endCursor, "hutzpah")}
@@ -39,13 +47,10 @@ const Devices = (props) => {
     </div>
   );
 }
-
-// export default function FetchNWash(props){
+export default Devices
+// export default function Wrapper(props){
   
-//   const{data, error, loading, fetchMore }= useQuery(DEVICE_LOCATIONS, { variables:{after:null}})
 
-//   if (loading) return 'Loading...';
-//   // if (error ||!data) return `Error! ${error.message}`;
 //  // "WyJwb3NpdGlvbl9hdF9kZXNjIixbIjIwMjAtMDYtMjRUMDc6Mzk6NDItMDQ6MDAiLDIyNzNdXQ=="
 //   // const  {endCursor}= get(props['data', 'allDevices','pageInfo'],[])
 //   console.log(endCursor)
@@ -58,7 +63,7 @@ const Devices = (props) => {
   
 
 // })
-// withDeviceLocations(Devices)
-// }
+// // withDeviceLocations(Devices)
+//  }
 
-export default withDeviceLocations(Devices);
+// export default withDeviceLocations(Devices)
